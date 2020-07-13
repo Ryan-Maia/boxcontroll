@@ -1,0 +1,44 @@
+<%- contentFor('body') %>
+
+<div class="container" style="margin-top: 30px;">
+    <% if(msg) { %>
+        <% if(msg == 'Nome de caixa em uso!'){ %>
+            <div class="alert alert-dismissible alert-warning" style="margin-bottom: 50px;">
+        <%} else{%>
+            <div class="alert alert-dismissible alert-success" style="margin-bottom: 50px;">
+        <%}%>
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4 class="alert-heading"><b>Aviso!</b></h4>
+            <p class="mb-0"><%= msg %></p>
+        </div>
+    <% } %>
+    <form action="/caixas/adicionar" method="POST">
+        <div class="form-row">
+            <div class="col-md-8 col-lg-8 col-xl-8 offset-md-2 offset-lg-2 offset-xl-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">CADASTRO DE CAIXA</h4>
+                        <h6 class="text-muted card-subtitle mb-2"></h6>
+                        <div class="form-row">
+                            <div class="col">
+                                <label>Nome</label>
+                                <input class="form-control" type="text" name="nome" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <label>Descrição</label>
+                                <textarea class="form-control" name="descricao" required></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <button class="btn btn-danger btn-block" type="submit" style="margin-top: 20px;">Cadastrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

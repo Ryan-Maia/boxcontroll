@@ -1,0 +1,179 @@
+<%- contentFor('body') %>
+<div class="container" style="margin-top: 30px;">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h1 class="text-center">Caixas</h1>
+                </div>
+                <div class="col-md-12 text-center" style="margin-bottom: 10px;">
+                    <input class="border rounded" type="text" placeholder="Pesquise" id="search-bar">
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-8 offset-md-2 table-row">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm table-select">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody id="main-content">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px;margin-bottom: 20px;">
+                <div class="col">
+                    <a href="/caixas/adicionar">
+                        <button class="btn btn-danger btn-block" type="button"><i class="fa fa-plus"></i>&nbsp;Adicionar</button>
+                    </a>
+                </div>
+                <div class="col">
+                    <button class="btn btn-danger btn-block" type="button" id="btn-alterar" onclick="alterar()">
+                        <i class="fa fa-pencil"></i>&nbsp;Alterar
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-danger btn-block" type="button" id="btn-deletar" onclick="showModal()">
+                        <i class="fa fa-trash"></i>&nbsp;Deletar
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-danger btn-block" type="button" id="btn-inspecionar">
+                        <i class="fa fa-folder-open"></i>&nbsp;Inspecionar
+                    </button>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+<div class="modal fade" role="dialog" tabindex="-1" id="delete-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Aviso</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+            <div class="modal-body">
+                <p>Você realmente deseja remover a caixa <b id="nome-caixa-delete"></b>?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" type="button" data-dismiss="modal">Cancelar</button>
+                <button class="btn btn-danger" type="button" onclick="remover()">Remover</button></div>
+        </div>
+    </div>
+</div>
+<script>
+var selectedRowId;
+var selectedRow;
+function getData(texto = ""){
+    $.ajax({
+        url: "/caixas/list",
+        type: "POST",
+        data: {
+            pesquisa: texto,
+        },
+        success: function(data){
+            console.log(data);
+            $("#main-content")[0].innerHTML = ""
+            data.data.map((row)=>{
+                let tr = document.createElement("tr");
+                let id = document.createElement("td");
+                let nome = document.createElement("td");
+                let descricao = document.createElement("td");
+                id.innerHTML = row.id;
+                nome.innerHTML = row.nome;
+                descricao.innerHTML = row.descricao;
+                tr.append(id);
+                tr.append(nome);
+                tr.append(descricao);
+
+                if(row.id == selectedRowId){
+                    tr.classList.add('selected-row');
+                    selectedRow = tr;
+                }
+
+                tr.onclick = ()=>{
+                    if(selectedRowId == row.id){ // REMOVE A LINHA SELECIONADA                       
+                        $(tr).removeClass('selected-row');
+                        selectedRowId = undefined;
+                        selectedRow = undefined;
+                    }else{ // SELECIONA UMA LINHA
+                        selectedRowId = row.id;
+                        $(selectedRow).removeClass('selected-row');
+                        selectedRow = tr;
+                        $(tr).addClass('selected-row');                        
+                    }
+                    buttonState();
+                }
+
+                $("#main-content").append(tr);
+            });
+            
+        }
+    });
+}
+$(function(){
+    getData();
+    buttonState(); // DESABILITA OS BOTÕES AUXILIARES
+    $("#search-bar").on('keyup',()=>{ // BARRA DE PESQUISA
+        getData($("#search-bar").val());
+    })
+    $("#main-content tr")
+    
+})
+function buttonState(){
+    if(!selectedRowId){
+        $("#btn-inspecionar").prop( "disabled", true );
+        $("#btn-alterar").prop( "disabled", true );
+        $("#btn-deletar").prop( "disabled", true );
+    }else{
+        $("#btn-inspecionar").prop( "disabled", false );
+        $("#btn-alterar").prop( "disabled", false );
+        $("#btn-deletar").prop( "disabled", false );
+    }
+}
+
+// FUNÇÕES DOS BOTÕES
+function alterar(){
+    window.location = "/caixas/alterar/" + selectedRowId;
+}
+function remover(){
+    let id = undefined;
+    id = $(selectedRow)[0].cells[0].innerHTML;
+    $.ajax({
+        url: "/caixas/remover",
+        type: "POST",
+        data: {
+            id: id,
+        },
+        success: function(data){
+            if(data){
+                $("#delete-modal").modal('hide');
+                alert("Caixa removida com sucesso!"); //Avisa se deu certo
+                selectedRow = undefined;
+                selectedRowId = undefined;
+                getData(); // Atualiza a lista
+                
+            }else{
+                $("#delete-modal").modal('hide');
+                alert("Não foi possível remover a caixa!");
+            }
+        }
+    });
+    
+}
+function showModal(){
+    if(selectedRow){
+        $("#nome-caixa-delete")[0].innerHTML = "<br>" + $(selectedRow)[0].cells[1].innerHTML;
+        $("#delete-modal").modal();
+    }
+}
+</script>
