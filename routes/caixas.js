@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
 const {db} = require('../modules/banco')
-router.get('/',(req,res)=>{    
+router.get('/',(req,res)=>{
+    
+    console.log(req.get('referer'));    
     res.render('pages/caixas/listar',{ layout: 'caixas' })
 })
 router.get('/inspecionar/:id',(req,res)=>{    
@@ -34,7 +36,6 @@ router.post('/adicionar',(req,res)=>{
             req.flash('msg','Caixa cadastrada com sucesso!');
             res.redirect('/caixas/adicionar');
         }
-        
     });
 });
 router.post('/alterar',(req,res)=>{
