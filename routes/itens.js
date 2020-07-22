@@ -7,8 +7,8 @@ router.get('/',(req,res)=>{
 })
 
 router.get('/adicionar',(req,res)=>{
-    db.all(`SELECT * FROM categoria`,(err,row)=>{
-        res.render('pages/itens/adicionar',{ layout: 'itens', msg: req.flash('msg')[0], categorias: row });
+    db.all(`SELECT * FROM categoria`,(err,row)=>{        
+        res.render('pages/itens/adicionar',{ layout: 'itens', msg: req.flash('msg')[0], categorias: row});
     })
 });
 router.get('/alterar/:id',(req,res)=>{

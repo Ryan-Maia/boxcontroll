@@ -2,3 +2,4 @@ node_modules
 banco.db
 banco.db.sql
 /BTSTUDIO
+.vscode

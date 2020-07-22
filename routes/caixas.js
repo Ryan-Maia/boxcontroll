@@ -11,7 +11,7 @@ router.get('/inspecionar/:id',(req,res)=>{
 })
 router.get('/adicionar',(req,res)=>{
     res.render('pages/caixas/adicionar',{ layout: 'caixas', msg: req.flash('msg')[0] });
-});
+});  
 router.get('/alterar/:id',(req,res)=>{
     
     db.all(`SELECT * FROM caixa WHERE id LIKE ${req.params.id}`,(err,row)=>{
@@ -19,7 +19,7 @@ router.get('/alterar/:id',(req,res)=>{
         res.render('pages/caixas/alterar',{ layout: 'caixas', msg: req.flash('msg')[0] , data: row[0] })
     })
     
-})
+});
 
 
 router.post('/adicionar',(req,res)=>{

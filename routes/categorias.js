@@ -6,7 +6,7 @@ router.get('/',(req,res)=>{
 })
 
 router.get('/adicionar',(req,res)=>{
-    res.render('pages/categorias/adicionar',{msg: req.flash('msg')[0] });
+    res.render('pages/categorias/adicionar',{msg: req.flash('msg')[0]});
 });
 router.get('/alterar/:id',(req,res)=>{
     
