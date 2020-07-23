@@ -1,38 +1,50 @@
-<div class="container" style="margin-top: 30px;">
-    <form action="/caixas/adicionarItem" method="POST">
-        <div class="form-row">
-            <div class="col-md-8 col-lg-8 col-xl-8 offset-md-2 offset-lg-2 offset-xl-2">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">ADIÇÃO DE ITEM</h4>
-                        <div class="form-row">
-                            <div class="col"><label>Item</label>
-                                <select class="form-control" required name="item">
-                                    <optgroup label="Itens Disponíveis">
-                                        <% data.map((e)=>{%>
-                                            <option value="<%=e.id%>"><%=e.nome%></option>
-                                        <%});%>
-                                    </optgroup>
-                                </select>
+<%- contentFor('body') %>
+    <div class="container" style="margin-top: 30px;">
+        <% if(msg) { %>
+            <% if(msg == 'Nome de caixa em uso!'){ %>
+                <div class="alert alert-dismissible alert-warning" style="margin-bottom: 50px;">
+            <%} else{%>
+                <div class="alert alert-dismissible alert-success" style="margin-bottom: 50px;">
+            <%}%>
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <h4 class="alert-heading"><b>Aviso!</b></h4>
+                <p class="mb-0"><%= msg %></p>
+            </div>
+        <% } %>
+        <form action="/caixas/adicionarItem" method="POST">
+            <div class="form-row">
+                <div class="col-md-8 col-lg-8 col-xl-8 offset-md-2 offset-lg-2 offset-xl-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">ADIÇÃO DE ITEM</h4>
+                            <div class="form-row">
+                                <div class="col"><label>Item</label>
+                                    <select class="form-control" required name="item">
+                                        <optgroup label="Itens Disponíveis">
+                                            <% data.map((e)=>{%>
+                                                <option value="<%=e.id%>"><%=e.nome%></option>
+                                            <%});%>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label>Quantidade</label>
+                                    <input class="form-control" type="number" min="1" value="1" name="quantidade" required>
+                                </div>
                             </div>
-                            <div class="col">
-                                <label>Quantidade</label>
-                                <input class="form-control" type="number" min="1" value="1" name="quantidade" required>
+                            <div class="form-row">
+                                <div class="col"><label>Observações:</label><textarea class="form-control" name="observacao"></textarea></div>
                             </div>
+                            <div class="form-row">
+                                <div class="col"><button class="btn btn-danger btn-block" type="submit" style="margin-top: 20px;">Adicionar</button></div>
+                            </div>
+                            <input hidden name="caixa" value="<%=id%>">
                         </div>
-                        <div class="form-row">
-                            <div class="col"><label>Observações:</label><textarea class="form-control" name="observacao"></textarea></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col"><button class="btn btn-danger btn-block" type="submit" style="margin-top: 20px;">Adicionar</button></div>
-                        </div>
-                        <input hidden name="caixa" value="<%=id%>">
                     </div>
                 </div>
-            </div>
+        </div>
+        </form>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col text-center"><a class="btn btn-danger" type="button" href="/caixas/inspecionar/<%= id %>">Voltar</a></div>
+        </div>
     </div>
-    </form>
-    <div class="row" style="margin-top: 20px;">
-        <div class="col text-center"><a class="btn btn-danger" type="button" href="/caixas/inspecionar/<%= id %>">Voltar</a></div>
-    </div>
-</div>

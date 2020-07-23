@@ -58,10 +58,11 @@ router.post('/adicionarItem',(req,res)=>{
             console.log(err);
             if(err.errno === 19){
                 req.flash('msg','ERROR!');
+                res.redirect('/caixas/adicionarItem/'+caixa);
             }
         }else{
             req.flash('msg','Caixa cadastrada com sucesso!');
-            res.redirect('/caixas/adicionarItem/'+item);
+            res.redirect('/caixas/adicionarItem/'+caixa);
         }
     });
 });
