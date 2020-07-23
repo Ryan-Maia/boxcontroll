@@ -2,13 +2,20 @@ var express = require('express');
 var router = express.Router();
 const {db} = require('../modules/banco')
 router.get('/',(req,res)=>{
-    
     console.log(req.get('referer'));    
     res.render('pages/caixas/listar',{ layout: 'caixas' })
 })
-router.get('/inspecionar/:id',(req,res)=>{    
-    res.send("Hmm");
-})
+router.get('/inspecionar/:id',(req,res)=>{   
+    
+    db.all(`SELECT * FROM caixa_item WHERE caixa_id = ${req.params.id}`,(err,rows)=>{
+        console.log(rows);
+        res.render('pages/caixas/inspecionar',{ layout: 'caixas', msg: req.flash('msg')[0] });
+    })
+    
+});
+router.get('/adicionarItem',(req,res)=>{
+    res.render('pages/caixas/adicionarItem',{ layout: 'caixas', msg: req.flash('msg')[0] });
+});
 router.get('/adicionar',(req,res)=>{
     res.render('pages/caixas/adicionar',{ layout: 'caixas', msg: req.flash('msg')[0] });
 });  

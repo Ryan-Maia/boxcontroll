@@ -46,7 +46,7 @@
                     </button>
                 </div>
                 <div class="col">
-                    <button class="btn btn-danger btn-block" type="button" id="btn-inspecionar">
+                    <button class="btn btn-danger btn-block" type="button" id="btn-inspecionar" onclick="inspecionar()">
                         <i class="fa fa-folder-open"></i>&nbsp;Inspecionar
                     </button>
                 </div>
@@ -174,6 +174,11 @@ function showModal(){
     if(selectedRow){
         $("#nome-caixa-delete")[0].innerHTML = "<br>" + $(selectedRow)[0].cells[1].innerHTML;
         $("#delete-modal").modal();
+    }
+}
+function inspecionar(){
+    if(selectedRowId){
+        window.location = "/caixas/inspecionar/" + selectedRowId;
     }
 }
 </script>
