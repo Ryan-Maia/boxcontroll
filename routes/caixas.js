@@ -7,14 +7,19 @@ router.get('/',(req,res)=>{
 })
 router.get('/inspecionar/:id',(req,res)=>{   
     
-    db.all(`SELECT * FROM caixa_item WHERE caixa_id = ${req.params.id}`,(err,rows)=>{
-        console.log(rows);
-        res.render('pages/caixas/inspecionar',{ layout: 'caixas', msg: req.flash('msg')[0] });
+    db.all(`SELECT item.id id, categoria.nome categoria, item.nome nome FROM item,categoria ON item.categoria = categoria.id WHERE item.id IN (SELECT item_id FROM caixa_item WHERE caixa_id = ${req.params.id}) `,(err,rows)=>{
+        db.get(`SELECT nome FROM caixa WHERE id = ${req.params.id}`,(err,row)=>{
+            res.render('pages/caixas/inspecionar',{ layout: 'caixas', msg: req.flash('msg')[0] ,id:req.params.id,data:rows, nome: row});
+        })
+        
     })
     
 });
-router.get('/adicionarItem',(req,res)=>{
-    res.render('pages/caixas/adicionarItem',{ layout: 'caixas', msg: req.flash('msg')[0] });
+router.get('/adicionarItem/:id',(req,res)=>{
+    db.all(`SELECT * FROM item WHERE id NOT IN (SELECT item_id FROM caixa_item WHERE caixa_id = ${req.params.id});`,(err,rows)=>{
+        res.render('pages/caixas/adicionarItem',{ layout: 'caixas', msg: req.flash('msg')[0] ,id:req.params.id, data:rows});
+    });
+    
 });
 router.get('/adicionar',(req,res)=>{
     res.render('pages/caixas/adicionar',{ layout: 'caixas', msg: req.flash('msg')[0] });
@@ -42,6 +47,23 @@ router.post('/adicionar',(req,res)=>{
         }else{
             req.flash('msg','Caixa cadastrada com sucesso!');
             res.redirect('/caixas/adicionar');
+        }
+    });
+});
+router.post('/adicionarItem',(req,res)=>{
+    let item = req.body.item;
+    let caixa = req.body.caixa;
+    let quantidade = req.body.quantidade;
+    let observacao = req.body.observacao;
+    db.run(`INSERT INTO caixa_item (caixa_id,item_id,quantidade,observacao) VALUES (${caixa},${item},${quantidade},'${observacao}')`,(err)=>{
+        if(err){
+            console.log(err);
+            if(err.errno === 19){
+                req.flash('msg','ERROR!');
+            }
+        }else{
+            req.flash('msg','Caixa cadastrada com sucesso!');
+            res.redirect('/caixas/adicionarItem/'+item);
         }
     });
 });

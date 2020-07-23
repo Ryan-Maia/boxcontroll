@@ -4,7 +4,7 @@
             <div class="col">
                 <div class="row">
                     <div class="col">
-                        <h1 class="text-center">"Nome da caixa" - Itens</h1>
+                        <h1 class="text-center"><%=nome.nome%> - Itens</h1>
                     </div>
                     <div class="col-md-12 text-center" style="margin-bottom: 10px;"><input class="border rounded" type="text" placeholder="Pesquise"></div>
                 </div>
@@ -20,18 +20,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Cabo de Rede</td>
-                                        <td>Cabos<br></td>
-                                    </tr>
+                                    <% data.map((e)=>{%>
+                                        <tr>
+                                            <td><%=e.id%></td>
+                                            <td><%=e.nome%></td>
+                                            <td><%=e.categoria%></td>
+                                        </tr>
+                                    <%});%>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 20px;margin-bottom: 20px;">
-                    <div class="col"><a class="btn btn-danger btn-block" type="button" href="/caixas/adicionarItem"><i class="fa fa-plus"></i>&nbsp;Atribuir</a></div>
+                    <div class="col"><a class="btn btn-danger btn-block" type="button" href="/caixas/adicionarItem/<%= id %>"><i class="fa fa-plus"></i>&nbsp;Atribuir</a></div>
                     <div class="col"><button class="btn btn-danger btn-block" type="button"><i class="fa fa-trash"></i>&nbsp;Remover</button></div>
                 </div>
             </div>
