@@ -6,14 +6,12 @@ router.get('/',(req,res)=>{
     res.render('pages/caixas/listar',{ layout: 'caixas' })
 })
 router.get('/inspecionar/:id',(req,res)=>{   
-    
     db.all(`SELECT item.id id, categoria.nome categoria, item.nome nome FROM item,categoria ON item.categoria = categoria.id WHERE item.id IN (SELECT item_id FROM caixa_item WHERE caixa_id = ${req.params.id}) `,(err,rows)=>{
         db.get(`SELECT nome FROM caixa WHERE id = ${req.params.id}`,(err,row)=>{
             res.render('pages/caixas/inspecionar',{ layout: 'caixas', msg: req.flash('msg')[0] ,id:req.params.id,data:rows, nome: row});
         })
         
     })
-    
 });
 router.get('/adicionarItem/:id',(req,res)=>{
     db.all(`SELECT * FROM item WHERE id NOT IN (SELECT item_id FROM caixa_item WHERE caixa_id = ${req.params.id});`,(err,rows)=>{

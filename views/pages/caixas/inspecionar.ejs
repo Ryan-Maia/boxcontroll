@@ -6,7 +6,9 @@
                     <div class="col">
                         <h1 class="text-center"><%=nome.nome%> - Itens</h1>
                     </div>
-                    <div class="col-md-12 text-center" style="margin-bottom: 10px;"><input class="border rounded" type="text" placeholder="Pesquise"></div>
+                    <div class="col-md-12 text-center" style="margin-bottom: 10px;">
+                        <input class="border rounded" type="text" placeholder="Pesquise" id="search-bar">
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
@@ -19,7 +21,7 @@
                                         <th>Categoria</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="dataTable">
                                     <% data.map((e)=>{%>
                                         <tr>
                                             <td><%=e.id%></td>
@@ -40,5 +42,25 @@
         </div>        
     </div>
 <script>
-
+    let listaPadrao;
+    $(function(){
+        listaPadrao = Array.from($("#dataTable")[0].children);
+        $("#search-bar").keyup(()=>{
+            let resultado;
+            let pesquisa = $("#search-bar").val().toLocaleLowerCase();
+            if (pesquisa != ""){
+                resultado = Array.from(listaPadrao).filter((e)=>{
+                    return (e.children[1].innerHTML.toLocaleLowerCase().indexOf(pesquisa) > -1);
+                });
+            }else{
+                resultado = listaPadrao;
+            }
+            
+            $("#dataTable")[0].innerHTML = "";
+            resultado.map((i)=>{
+                $("#dataTable")[0].append(i);
+            })
+            
+        })
+    })
 </script>
