@@ -36,13 +36,59 @@
                 </div>
                 <div class="row" style="margin-top: 20px;margin-bottom: 20px;">
                     <div class="col"><a class="btn btn-danger btn-block" type="button" href="/caixas/adicionarItem/<%= id %>"><i class="fa fa-plus"></i>&nbsp;Atribuir</a></div>
-                    <div class="col"><button class="btn btn-danger btn-block" type="button"><i class="fa fa-trash"></i>&nbsp;Remover</button></div>
+                    <div class="col"><button class="btn btn-danger btn-block" type="button" id="remove-btn" onclick="showModal()"><i class="fa fa-trash"></i>&nbsp;Remover</button></div>
                 </div>
             </div>
         </div>        
     </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="delete-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Aviso</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <p>Você realmente deseja remover o item <b id="nome-caixa-delete"></b>?</p>
+                    <small>A remoção será apenas da caixa. O item continuará cadastrado no sistema</small>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-danger" type="button" onclick="remover()">Remover</button></div>
+            </div>
+        </div>
+    </div>
+    <input hidden id="caixa_id" value="<%= id %>">
 <script>
+    var selectedRowId;
+    var selectedRow;
     let listaPadrao;
+    function showModal(){
+        $("#delete-modal").modal();
+    }
+    function remover(){
+        listaPadrao = Array.from(listaPadrao.filter((e)=>{
+            return (e.children[0].innerHTML != selectedRowId);
+        }))
+        $("#delete-modal").modal('hide');
+        if(selectedRowId){
+            let caixa_id = $("#caixa_id").val();
+            $.ajax({
+                url: "/caixas/removerItem",
+                type: "POST",
+                data: {
+                    item_id: selectedRowId,
+                    caixa_id: caixa_id
+                },
+                success: function(data){
+                    console.log(data);
+                }
+            });
+        }
+        selectedRowId = undefined;
+        selectedRow = undefined;
+        load();
+        prepareTable();
+        
+    }
     $(function(){
         listaPadrao = Array.from($("#dataTable")[0].children);
         $("#search-bar").keyup(()=>{
@@ -59,8 +105,41 @@
             $("#dataTable")[0].innerHTML = "";
             resultado.map((i)=>{
                 $("#dataTable")[0].append(i);
-            })
-            
-        })
+            });
+            prepareTable();
+        });
+        prepareTable();
     })
+    function prepareTable(){
+        Array.from($("#dataTable")[0].children).map((i)=>{
+            $(i).on('click',()=>{
+                if(selectedRow != i){
+                    $(selectedRow).removeClass("selected-row");
+                    $(i).addClass("selected-row");
+                    selectedRow = i;
+                    selectedRowId = i.children[0].innerHTML;                    
+                }else{
+                    $(i).removeClass("selected-row");
+                    selectedRow = undefined;
+                    selectedRowId = undefined;
+                }
+                enableButton();
+            })
+        })
+        enableButton();
+    }
+    function enableButton(){
+        if(selectedRowId && selectedRow){
+            $("#remove-btn")[0].disabled = false;
+        }else{
+            $("#remove-btn")[0].disabled = true;
+        }
+    }
+    function load(){
+        $("#dataTable")[0].innerHTML = "";
+        listaPadrao.map((i)=>{
+            $("#dataTable")[0].append(i);
+        });
+        prepareTable();
+    }
 </script>

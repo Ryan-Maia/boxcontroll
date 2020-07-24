@@ -19,6 +19,7 @@ router.get('/adicionarItem/:id',(req,res)=>{
     });
     
 });
+
 router.get('/adicionar',(req,res)=>{
     res.render('pages/caixas/adicionar',{ layout: 'caixas', msg: req.flash('msg')[0] });
 });  
@@ -45,24 +46,6 @@ router.post('/adicionar',(req,res)=>{
         }else{
             req.flash('msg','Caixa cadastrada com sucesso!');
             res.redirect('/caixas/adicionar');
-        }
-    });
-});
-router.post('/adicionarItem',(req,res)=>{
-    let item = req.body.item;
-    let caixa = req.body.caixa;
-    let quantidade = req.body.quantidade;
-    let observacao = req.body.observacao;
-    db.run(`INSERT INTO caixa_item (caixa_id,item_id,quantidade,observacao) VALUES (${caixa},${item},${quantidade},'${observacao}')`,(err)=>{
-        if(err){
-            console.log(err);
-            if(err.errno === 19){
-                req.flash('msg','ERROR!');
-                res.redirect('/caixas/adicionarItem/'+caixa);
-            }
-        }else{
-            req.flash('msg','Caixa cadastrada com sucesso!');
-            res.redirect('/caixas/adicionarItem/'+caixa);
         }
     });
 });
@@ -105,5 +88,33 @@ router.post('/list',(req,res)=>{
         });
     })
     
+});
+// ITEMS DAS CAIXAS //
+router.post('/adicionarItem',(req,res)=>{
+    let item = req.body.item;
+    let caixa = req.body.caixa;
+    let quantidade = req.body.quantidade;
+    let observacao = req.body.observacao;
+    db.run(`INSERT INTO caixa_item (caixa_id,item_id,quantidade,observacao) VALUES (${caixa},${item},${quantidade},'${observacao}')`,(err)=>{
+        if(err){
+            console.log(err);
+            if(err.errno === 19){
+                req.flash('msg','ERROR!');
+                res.redirect('/caixas/adicionarItem/'+caixa);
+            }
+        }else{
+            req.flash('msg','Caixa cadastrada com sucesso!');
+            res.redirect('/caixas/adicionarItem/'+caixa);
+        }
+    });
+});
+router.post('/removerItem/',(req,res)=>{
+    let item_id = req.body.item_id;
+    let caixa_id = req.body.caixa_id;
+    db.run(`DELETE FROM caixa_item WHERE caixa_id = ${caixa_id} AND item_id = ${item_id}`,(err)=>{
+        if(err){
+            console.log(err);
+        }
+    });
 });
 module.exports = router;
