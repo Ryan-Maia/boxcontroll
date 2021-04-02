@@ -1,14 +1,3 @@
-# Sobre
-
-Box Controll é um sistema simples para o controle de caixas e seus respectivos itens, para facilitar o catálogo de suas coisas
-
-## Instalação
-
-Após clonar/baixar o repositório execute o comando abaixo para instalar as dependências do sistema.
-
-```bash
-npm install
-```
 
 ## Execução
 
