@@ -3,3 +3,4 @@ banco.db
 banco.db.sql
 /BTSTUDIO
 .vscode
+package-lock.json
